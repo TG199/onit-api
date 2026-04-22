@@ -7,7 +7,7 @@
 import SubmissionService from "../services/SubmissionService.js";
 import WithdrawalService from "../services/WithdrawalService.js";
 import LedgerService from "../services/LedgerService.js";
-import { dbClient } from "../server.js";
+import { dbClient } from "../config/clients.js";
 import {
   ValidationError,
   NotFoundError,

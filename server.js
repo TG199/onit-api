@@ -1,21 +1,12 @@
 import env from "./config/env.js";
+import { dbClient, redisClient } from "./config/clients.js";
 import express from "express";
 import router from "./routes/index.js";
-import RedisClient from "./utils/redis.js";
-import DBClient from "./utils/db.js";
 
 const app = express();
 
 app.set("trust proxy", 1);
 
-const dbClient = new DBClient({
-  host: env.DB_HOST,
-  port: env.DB_PORT,
-  database: env.DB_NAME,
-  user: env.DB_USER,
-  password: env.DB_PASSWORD,
-});
-const redisClient = new RedisClient();
 
 app.use(express.json({ limit: "50mb" }));
 

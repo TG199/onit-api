@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
-import { redisClient } from "../server.js";
-import { dbClient } from "../server.js";
+import { redisClient } from "../config/clients.js";
+import { dbClient } from "../config/clients.js";
 
 const SALT_ROUNDS = 10;
 const SESSION_TTL = 60 * 60 * 24; // 24 hours in seconds
