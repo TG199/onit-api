@@ -42,6 +42,35 @@ export async function register(req, res) {
   }
 }
 
+export async function adminRegister(req, res) {
+  const { email, phone, password, adminSecret } = req.body;
+
+  if (!email || !phone || !password || !adminSecret) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret || adminSecret !== secret) {
+    return res.status(403).json({ error: "Invalid admin secret" });
+  }
+
+  const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+
+  try {
+    const result = await dbClient.query(
+      `INSERT INTO users (id, email, phone, password_hash, role)
+       VALUES ($1, $2, $3, $4, 'admin')
+       RETURNING id, email, role`,
+      [uuidv4(), email, phone, passwordHash]
+    );
+    return res.status(201).json({ message: "Admin registered successfully", user: result.rows[0] });
+  } catch (err) {
+    if (err.code === "23505") return res.status(409).json({ error: "Email or phone already exists" });
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
+
 /**
  * POST /auth/login
  */

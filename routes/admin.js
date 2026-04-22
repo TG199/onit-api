@@ -51,6 +51,10 @@ router.post("/ads/:id/activate", AdminController.activateAd);
 // Pause ad
 router.post("/ads/:id/pause", AdminController.pauseAd);
 
+// List all users
+router.get("/users", AdminController.getUsers);
+
+
 // Block user
 router.post("/users/:id/block", AdminController.blockUser);
 

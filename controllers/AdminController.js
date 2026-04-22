@@ -299,6 +299,45 @@ export async function pauseAd(req, res) {
   }
 }
 
+export async function getUsers(req, res) {
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const offset = parseInt(req.query.offset) || 0;
+    const search = req.query.search || null;
+
+    let query = `
+      SELECT id, email, phone, role, balance, is_blocked, location, created_at
+      FROM users WHERE 1=1
+    `;
+    const params = [];
+
+    if (search) {
+      query += ` AND (email ILIKE $${params.length + 1} OR phone ILIKE $${params.length + 1})`;
+      params.push(`%${search}%`);
+    }
+
+    query += ` ORDER BY created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+    params.push(limit, offset);
+
+    const result = await dbClient.query(query, params);
+    const users = result.rows.map((row) => ({
+      id: row.id,
+      email: row.email,
+      phone: row.phone,
+      role: row.role,
+      balance: parseFloat(row.balance),
+      isBlocked: row.is_blocked,
+      location: row.location,
+      createdAt: row.created_at,
+    }));
+
+    res.status(200).json({ users, pagination: { limit, offset, count: users.length } });
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
+
 /**
  * POST /api/admin/users/:id/block
  * Block user
