@@ -19,7 +19,7 @@ const redisClient = new RedisClient();
 
 app.use(express.json({ limit: "50mb" }));
 
-if (env.NODE_ENV === "production") {
+/*if (env.NODE_ENV === "production") {
   app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
@@ -33,6 +33,7 @@ if (env.NODE_ENV === "production") {
     next();
   });
 }
+*/
 
 app.use("/", router);
 app.get("/health", async (req, res) => {
